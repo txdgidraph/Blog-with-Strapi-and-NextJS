@@ -7,7 +7,7 @@ import {
   Link,
 } from "@material-ui/core";
 import TechNews from "../../pages/tech-news";
-import {Search} from "@material-ui/icons"
+import { Search } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   navlinks: {
     display: "flex",
@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
   searchBox: {
     padding: "2px 0px 2px 5px",
     borderRadius: "25px",
-    height:"30px",
-    border:"none",
+    height: "30px",
+    border: "none",
     "&:focus": {
       outline: "none",
     },
@@ -64,9 +64,13 @@ const Navbar = () => {
               Gadgets & Appliances
             </Link>
           </div>
-          <div style={{display:"flex",alignItems:"center", marginLeft:"20%"}}>
+          <div
+            style={{ display: "flex", alignItems: "center", marginLeft: "20%" }}
+          >
             <input placeholder="Search" className={classes.searchBox} />
-            <span style={{paddingLeft:"3px", paddingTop:"5px"}}><Search/></span>
+            <span style={{ paddingLeft: "3px", paddingTop: "5px" }}>
+              <Search />
+            </span>
           </div>
         </Toolbar>
       </AppBar>
