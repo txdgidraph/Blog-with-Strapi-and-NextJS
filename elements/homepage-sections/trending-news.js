@@ -6,29 +6,38 @@ import BlogPreview from "../../elements/blog-preview";
 import { url } from "../../next.config";
 import fetchBlogs from "../../elements/fetch-blogs-api";
 import DatePublished from "../published-date";
+import BatteryAnimation from "../battery-animation";
 
 const TrendingNews = () => {
   const { getBlogs } = fetchBlogs();
   const [blogs, setBlogs] = useState();
+  const [showPage, setShowPage] = useState(false);
+  console.log(blogs);
   useEffect(() => {
     getBlogs()
       .then((response) => response.json())
       .then((data) => setBlogs(data));
+
+    // setTimeout(() => {
+    //   setShowPage(true);
+    // }, 0);
   }, []);
-  console.log(blogs);
 
   const topSection = [];
   const headlineSection = [];
+  const headlineLeftSection = [1,2,3,4,5,6];
+  const headlineRightSection = [];
+
   if (blogs) {
     const totalBlogs = blogs.data.length;
     let trendingBlogs = [];
-    const section_1 = "";
-    const section_2 = "";
-    // 😂😂😂
+
+    // 😂😂😂//
     while (trendingBlogs.length < 8) {
       var r = Math.floor(Math.random() * totalBlogs) + 1;
       if (trendingBlogs.indexOf(r) === -1) trendingBlogs.push(r);
     }
+    //
     topSection.push(trendingBlogs[0]);
     topSection.push(trendingBlogs[1]);
     let count = 2;
@@ -36,14 +45,24 @@ const TrendingNews = () => {
       headlineSection.push(trendingBlogs[count]);
       count++;
     }
-    section_1 = blogs.data[topSection[0]];
-    section_2 = blogs.data[topSection[1]];
+
+    let leftCount = 0;
+    let rightCount = 3;
+    // while (leftCount < 3) {
+    //   headlineLeftSection.push(headlineSection[leftCount]);
+    //   headlineRightSection.push(headlineSection[rightCount]);
+    //   console.log(headlineLeftSection);
+    //   leftCount++;
+    //   rightCount++;
+    // }
   }
-  
   const classes = useStyles();
+  console.log("This is it" + headlineSection)
   return (
     <div style={{ marginTop: "4vh" }} className="content">
-      {blogs ? (
+      {blogs &&
+      blogs.data[9].attributes.FeaturedImage.data.attributes.url &&
+      headlineLeftSection ? (
         <div>
           <h1 style={{ margin: "0 0 4vh 4vh" }}>Trending News</h1>
           <Grid container className={classes.entireGridSection}>
@@ -51,51 +70,62 @@ const TrendingNews = () => {
             <Grid item md={8} sm={12} xs={12}>
               <Grid container>
                 {/* ===== Section 1 ====== */}
-                {blogs && topSection.map((items, index) => {
-                  return (
-                    <Grid item md={6} sm={6} xs={12} key={index}>
-                      <div className={classes.contentSection_1}>
-                        <div
-                          style={{
-                            height: "200px",
-                            backgroundImage: `url(${url}${blogs && blogs.data[items].attributes.FeaturedImage.data.attributes.url})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                          }}
-                        ></div>
-                        <div>
+                {blogs &&
+                  topSection.map((items, index) => {
+                    return (
+                      <Grid item md={6} sm={6} xs={12} key={index}>
+                        <div className={classes.contentSection_1}>
                           <div
                             style={{
-                              fontSize: "0.8em",
-                              marginBottom: "1em",
-                              marginTop: "1em",
+                              height: "200px",
+                              backgroundImage: `url(${url}${
+                                blogs.data[items]
+                                  ? blogs.data[items].attributes.FeaturedImage
+                                      .data.attributes.url
+                                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzkC9ryyokGzGyy-3DVWDqDJT8tu6k1M5vGuVh9vBj5hrTXV_AecRw8XRlulrf_UZBAIs&usqp=CAU"
+                              })`,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
                             }}
-                          >
-                            <span
-                              style={{ paddingRight: "2em", color: "#0F90FE" }}
+                          ></div>
+                          <div>
+                            <div
+                              style={{
+                                fontSize: "0.8em",
+                                marginBottom: "1em",
+                                marginTop: "1em",
+                              }}
                             >
-                              {blogs.data[items].attributes.Category}
-                            </span>
-                            <span>
-                              <DatePublished
-                                date={blogs.data[items].attributes.publishedAt}
+                              <span
+                                style={{
+                                  paddingRight: "2em",
+                                  color: "#0F90FE",
+                                }}
+                              >
+                                {blogs.data[items] && blogs.data[items].attributes.Category}
+                              </span>
+                              <span>
+                                <DatePublished
+                                  date={
+                                    blogs.data[items] && blogs.data[items].attributes.publishedAt
+                                  }
+                                />
+                              </span>
+                            </div>
+                            <h3 style={{ marginBottom: "0.5em" }}>
+                              {blogs.data[items] && blogs.data[items].attributes.Title}
+                            </h3>
+                            <p>
+                              <BlogPreview
+                                name={blogs.data[items] && blogs.data[items].attributes.blogBody}
+                                count="150"
                               />
-                            </span>
+                            </p>
                           </div>
-                          <h3 style={{ marginBottom: "0.5em" }}>
-                            {blogs.data[items].attributes.Title}
-                          </h3>
-                          <p>
-                            <BlogPreview
-                              name={blogs.data[items].attributes.blogBody}
-                              count="150"
-                            />
-                          </p>
                         </div>
-                      </div>
-                    </Grid>
-                  );
-                })}
+                      </Grid>
+                    );
+                  })}
               </Grid>
               {/* ===== Section 3 Headlines ====== */}
               <Grid container>
@@ -107,147 +137,63 @@ const TrendingNews = () => {
                   }}
                 ></div>
                 {/* ===== Left Side Column ====== */}
-                <Grid item md={6} sm={6} xs={12}>
-                  <div style={{ margin: "0 1em 1em 0" }}>
-                    <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={2}
-                        md={2}
-                        sm={2}
-                        style={{
-                          backgroundImage: `url(${url}${
-                            blogs.data[headlineSection[0]].attributes
-                              .FeaturedImage.data.attributes.url
-                          })`,
-                        }}
-                        className={classes.headlineLeftSection}
-                      ></Grid>
-                      <Grid item xs={10} md={10} sm={10}>
-                        <div
-                          style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
-                        >
-                          <span
-                            style={{ paddingRight: "2em", color: "#0F90FE" }}
+                {headlineLeftSection.map((item, index) => {
+                  return(
+                  <Grid item md={6} sm={6} xs={12} key={index}>
+                    <div style={{ margin: "0 1em 1em 0" }}>
+                      <Grid container spacing={1}>
+                        <Grid
+                          item
+                          xs={2}
+                          md={2}
+                          sm={2}
+                          style={{
+                            backgroundImage: `url(${url}${
+                              blogs &&
+                              blogs.data[index].attributes.FeaturedImage.data
+                                .attributes.url
+                            })`,
+                          }}
+                          className={classes.headlineLeftSection}
+                        ></Grid>
+                        <Grid item xs={10} md={10} sm={10}>
+                          <div
+                            style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
                           >
-                            {blogs.data[headlineSection[0]].attributes.Category}
-                          </span>
-                          <span>
-                            <DatePublished
-                              date={
-                                blogs.data[headlineSection[0]].attributes
-                                  .publishedAt
+                            <span
+                              style={{ paddingRight: "2em", color: "#0F90FE" }}
+                            >
+                              {
+                                blogs.data[item].attributes
+                                  .Category
                               }
-                            />
-                          </span>
-                        </div>
-                        <h3>
-                          {blogs.data[headlineSection[0]].attributes.Title}
-                        </h3>
-                      </Grid>
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: "1em",
-                          borderTop: "1px dashed #dcdedf",
-                        }}
-                      ></div>
-                    </Grid>
-                  </div>
-                  <div style={{ margin: "0 1em 1em 0" }}>
-                    <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={2}
-                        md={2}
-                        sm={2}
-                        style={{
-                          backgroundImage: `url(${url}${
-                            blogs && blogs.data[headlineSection[1]].attributes
-                              .FeaturedImage.data.attributes.url
-                          })`,
-                        }}
-                        className={classes.headlineLeftSection}
-                      ></Grid>
-                      <Grid item xs={10} md={10} sm={10}>
+                            </span>
+                            <span>
+                              <DatePublished
+                                date={
+                                  blogs.data[item].attributes
+                                    .publishedAt
+                                }
+                              />
+                            </span>
+                          </div>
+                          <h3>
+                            {blogs.data[item].attributes.Title}
+                          </h3>
+                        </Grid>
                         <div
-                          style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
-                        >
-                          <span
-                            style={{ paddingRight: "2em", color: "#0F90FE" }}
-                          >
-                            {blogs.data[headlineSection[1]].attributes.Category}
-                          </span>
-                          <span>
-                            <DatePublished
-                              date={
-                                blogs.data[headlineSection[1]].attributes
-                                  .publishedAt
-                              }
-                            />
-                          </span>
-                        </div>
-                        <h3>
-                          {blogs.data[headlineSection[1]].attributes.Title}
-                        </h3>
+                          style={{
+                            width: "100%",
+                            marginTop: "1em",
+                            borderTop: "1px dashed #dcdedf",
+                          }}
+                        ></div>
                       </Grid>
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: "1em",
-                          borderTop: "1px dashed #dcdedf",
-                        }}
-                      ></div>
-                    </Grid>
-                  </div>
-                  <div style={{ margin: "0 1em 1em 0" }}>
-                    <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={2}
-                        md={2}
-                        sm={2}
-                        style={{
-                          backgroundImage: `url(${url}${
-                            blogs && blogs.data[headlineSection[2]].attributes
-                              .FeaturedImage.data.attributes.url
-                          })`,
-                        }}
-                        className={classes.headlineLeftSection}
-                      ></Grid>
-                      <Grid item xs={10} md={10} sm={10}>
-                        <div
-                          style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
-                        >
-                          <span
-                            style={{ paddingRight: "2em", color: "#0F90FE" }}
-                          >
-                            {blogs.data[headlineSection[2]].attributes.Category}
-                          </span>
-                          <span>
-                            <DatePublished
-                              date={
-                                blogs.data[headlineSection[2]].attributes
-                                  .publishedAt
-                              }
-                            />
-                          </span>
-                        </div>
-                        <h3>
-                          {blogs.data[headlineSection[2]].attributes.Title}
-                        </h3>
-                      </Grid>
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: "1em",
-                          borderTop: "1px dashed #dcdedf",
-                        }}
-                      ></div>
-                    </Grid>
-                  </div>
-                </Grid>
+                    </div>
+                  </Grid>)
+                })}
                 {/* ===== Right Side Column ====== */}
+                {headlineRightSection.map((item, index) => {
                 <Grid item md={6} sm={6} xs={12}>
                   <div style={{ margin: "0 0 1em 1em" }}>
                     <Grid container spacing={1}>
@@ -258,10 +204,12 @@ const TrendingNews = () => {
                         sm={2}
                         style={{
                           backgroundImage: `url(${url}${
-                          blogs &&  blogs.data[headlineSection[3]].attributes
+                            blogs &&
+                            blogs.data[headlineSection[3]].attributes
                               .FeaturedImage.data.attributes.url
                           })`,
-                        }}className={classes.headlineRightSection}
+                        }}
+                        className={classes.headlineRightSection}
                       ></Grid>
                       <Grid item xs={10} md={10} sm={10}>
                         <div
@@ -294,99 +242,9 @@ const TrendingNews = () => {
                       ></div>
                     </Grid>
                   </div>
-                  <div style={{ margin: "0 0 1em 1em" }}>
-                    <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={2}
-                        md={2}
-                        sm={2}
-                        style={{
-                          backgroundImage: `url(${url}${
-                          blogs &&  blogs.data[headlineSection[4]].attributes
-                              .FeaturedImage.data.attributes.url
-                          })`,
-                        }}
-                      ></Grid>
-                      <Grid item xs={10} md={10} sm={10}>
-                        <div
-                          style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
-                        >
-                          <span
-                            style={{ paddingRight: "2em", color: "#0F90FE" }}
-                          >
-                            {blogs.data[headlineSection[4]].attributes.Category}
-                          </span>
-                          <span>
-                            <DatePublished
-                              date={
-                                blogs.data[headlineSection[4]].attributes
-                                  .publishedAt
-                              }
-                            />
-                          </span>
-                        </div>
-                        <h3>
-                          {blogs.data[headlineSection[4]].attributes.Title}
-                        </h3>
-                      </Grid>
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: "1em",
-                          borderTop: "1px dashed #dcdedf",
-                        }}
-                      ></div>
-                    </Grid>
-                  </div>
-                  <div style={{ margin: "0 0 1em 1em" }}>
-                    <Grid container spacing={1}>
-                      <Grid
-                        item
-                        xs={2}
-                        md={2}
-                        sm={2}
-                        style={{
-                          backgroundImage: `url(${url}${
-                          blogs && blogs.data[headlineSection[5]].attributes
-                              .FeaturedImage.data.attributes.url
-                          })`,
-                        }}
-                      ></Grid>
-                      <Grid item xs={10} md={10} sm={10}>
-                        <div
-                          style={{ fontSize: "0.8em", marginBottom: "0.5em" }}
-                        >
-                          <span
-                            style={{ paddingRight: "2em", color: "#0F90FE" }}
-                          >
-                            {blogs.data[headlineSection[5]].attributes.Category}
-                          </span>
-                          <span>
-                            <DatePublished
-                              date={
-                                blogs.data[headlineSection[5]].attributes
-                                  .publishedAt
-                              }
-                            />
-                          </span>
-                        </div>
-                        <h3>
-                          {blogs.data[headlineSection[5]].attributes.Title}
-                        </h3>
-                      </Grid>
-                      <div
-                        style={{
-                          width: "100%",
-                          marginTop: "1em",
-                          borderTop: "1px dashed #dcdedf",
-                        }}
-                      ></div>
-                    </Grid>
-                  </div>
-                </Grid>
+                </Grid>})}
               </Grid>
-            </Grid>
+            </Grid> 
             {/* ===== SideBar ====== */}
             <Grid item md={4} sm={12} xs={12}>
               <div className={classes.trendingNews_Sidebar_Cont}>
@@ -459,7 +317,9 @@ const TrendingNews = () => {
           </Grid>
         </div>
       ) : (
-        <div></div>
+        <div>
+          <BatteryAnimation />
+        </div>
       )}
     </div>
   );

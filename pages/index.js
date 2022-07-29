@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import TopSlider from "../elements/homepage-sections/top-slider";
 import BatteryAnimation from "../elements/battery-animation";
 import TrendingNews from "../elements/homepage-sections/trending-news";
-import DatePublished from "../elements/published-date";
+import FeaturedPosts from "../elements/homepage-sections/featured-posts";
 function Home() {
   const { getBlogs } = fetchBlogs();
   const [blogs, setBlogs] = useState();
@@ -20,7 +20,7 @@ function Home() {
 
           <TopSlider />
           <TrendingNews />
-          {/* <DatePublished/> */}
+          <FeaturedPosts/>
           <h1>Tonny</h1>
      
     </div>
